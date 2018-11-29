@@ -8,7 +8,7 @@
   * [Deflate Kernel](#deflate-kernel)
   * [Interface](#interface)
   * [Verification](#verif)
-    + [Requirement](#platform-requirement)
+    + [Requirement](#requirement)
     + [Execution](#execution)
 
 ## Restrictions
