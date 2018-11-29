@@ -16,6 +16,7 @@
 
 ## Compression Format
 
+The compression format here we use exactly follows RFC1951: each block of compressed data begins with 3 header bits and ends with code "7'b0000000". Since RFC1951 doesn't limit the compressed block size, we take the whole file as a single block to avoid extra overhead.
 
 ## Deflate Kernel
 
@@ -27,7 +28,7 @@
 
 ### Requirement
 
-The provided exection files for decompression are generated through SDACCEL 2017.4. They are basically software emulation files and should be performed on the "xinlinx_vcu1525_dynamic_5_0" platform.
+The provided exection files for decompression are generated through SDACCEL 2017.4. They are basically software emulation files and should be performed on the "xinlinx_vcu1525_dynamic_5_0" platform. 
 
 ### Execution
 
