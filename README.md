@@ -23,6 +23,11 @@ The compression format here we use exactly follows RFC1951: each block of compre
 
 ## Interface
 
+The original design was implemented on Intel-Altera HARP and HARPv2 platforms, which have over 15GB/s CPU-FPGA communication bandwidth, to get a maximum end-to-end throughput of ~12GB/s. However, due to copyright issue we will not provide the communication interface code here. But it should be fairly easy for you to wrap the kernel with your own interface if you are a HARP/HARPv2 user and follow what our paper described.
+
+You can also integrate this kernel into SDAccel flow on Xilinx Platforms, i.e. AWS F1 instance. However, as already discussed in our paper, the actual read/write PCIe bandwidth of SDAccel is very limited (less than 3GB/s). So we recommend you using AWS hdk flow to directly feed data from PCIe to the kernel and bypassing the FPGA DRAM access. You can find the relavent information from https://vast.cs.ucla.edu/sites/default/files/publications/st-accel-high.pdf.
+
+If you don't know how to do it, no worries! We will release the interface which bypasses the FPGA DRAM and achieve an end-to-end throughput of >10 GB/s on AWS F1 instance. Please check back later.
 
 ## Verification
 
