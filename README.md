@@ -20,6 +20,9 @@ The compression format here we use exactly follows RFC1951: each block of compre
 
 ## Deflate Kernel
 
+We provide two kinds of kernels: one is for the Xilinx-AWS platform and the other is for the Intel-Altera HARPv2 platform. The HARPv2 kernel support a hash-chained depth of 3, while the Xilinx-AWS kernel has only one-level depth. To increase hash chain depth, you can refer to the corresponding hash_match.v in the HAPR2 kernel and custimize the depth. The trade-off here is the maximum clock frequency might be degraded.
+
+To make the multiple rom files work, you have to modify the corresponding rom.v files to include the right path of .mif files. For example, in the line 90 of file "huffman_translate_d_extra_bits_rom.v", it should include its corresponding "huffman_translate_d_extra_bits_rom.mif". Assuming "huffman_translate_d_extra_bits_rom.mif" is in the directory of "C:/Users/Weikang/Desktop/work/design/xilinx/Compression_Vec16_V32/src/", you should change the path correspondingly.
 
 ## Interface
 
