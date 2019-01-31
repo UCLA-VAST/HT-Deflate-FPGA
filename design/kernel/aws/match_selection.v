@@ -157,22 +157,22 @@ wire 				last_s1_reg;
 
 // stage 1
 // for VEC=16 design, 5 LSBs is enough to get the reached length 
-assign reach_0_op = len_raw[124:120] + 5'd4;
-assign reach_1_op = len_raw[116:112] + 5'd5;
-assign reach_2_op = len_raw[108:104] + 5'd6;
-assign reach_3_op = len_raw[100:96] + 5'd7;
-assign reach_4_op = len_raw[92:88] + 5'd8;
-assign reach_5_op = len_raw[84:80] + 5'd9;
-assign reach_6_op = len_raw[76:72] + 5'd10;
-assign reach_7_op = len_raw[68:64] + 5'd11;
-assign reach_8_op = len_raw[60:56] + 5'd12;
-assign reach_9_op = len_raw[52:48] + 5'd13;
-assign reach_10_op = len_raw[44:40] + 5'd14;
-assign reach_11_op = len_raw[36:32] + 5'd15;
-assign reach_12_op = len_raw[28:24] + 5'd16;
-assign reach_13_op = len_raw[20:16] + 5'd17;
-assign reach_14_op = len_raw[12:8] + 5'd18;
-assign reach_15_op = len_raw[4:0] + 5'd19;
+assign reach_0_op = len_raw[124:120] + 5'd3;
+assign reach_1_op = len_raw[116:112] + 5'd4;
+assign reach_2_op = len_raw[108:104] + 5'd5;
+assign reach_3_op = len_raw[100:96] + 5'd6;
+assign reach_4_op = len_raw[92:88] + 5'd7;
+assign reach_5_op = len_raw[84:80] + 5'd8;
+assign reach_6_op = len_raw[76:72] + 5'd9;
+assign reach_7_op = len_raw[68:64] + 5'd10;
+assign reach_8_op = len_raw[60:56] + 5'd11;
+assign reach_9_op = len_raw[52:48] + 5'd12;
+assign reach_10_op = len_raw[44:40] + 5'd13;
+assign reach_11_op = len_raw[36:32] + 5'd14;
+assign reach_12_op = len_raw[28:24] + 5'd15;
+assign reach_13_op = len_raw[20:16] + 5'd16;
+assign reach_14_op = len_raw[12:8] + 5'd17;
+assign reach_15_op = len_raw[4:0] + 5'd18;
 
 // valid_raw[k]== 0 means the len_raw is a literal
 assign reach_0 = (valid_raw[15])?{reach_0_op}:5'd1;	
@@ -315,8 +315,8 @@ register_compression #(.N(16)) 		register_valid_raw_s2_U(.d(valid_raw_s1_reg), .
 
 // 
 register_compression #(.N(1)) 		register_en_s2_U(.d(en_s1_reg), .clk(clk), .q(en_s2_reg));
-register_compression #(.N(1)) register_start_s2_U(.d(start_s1_reg), .clk(clk), .q(start_s2_reg));
-register_compression #(.N(1)) register_last_s2_U(.d(last_s1_reg), .clk(clk), .q(last_s2_reg));
+register_compression #(.N(1)) 		register_start_s2_U(.d(start_s1_reg), .clk(clk), .q(start_s2_reg));
+register_compression #(.N(1)) 		register_last_s2_U(.d(last_s1_reg), .clk(clk), .q(last_s2_reg));
 
 
 // ====================================================================
@@ -326,22 +326,21 @@ register_compression #(.N(1)) register_last_s2_U(.d(last_s1_reg), .clk(clk), .q(
 // ====================================================================
 
 // stage 3 ports definition
-// max_reach_valid_0 ==1 indicates if max_reach == VEC + 1
-wire				max_reach_valid_0; 
-// max_reach_valid_1 == 1 indicate if max_reach == VEC	
-wire				max_reach_valid_1;		
+// max_reach_equal_17 ==1 indicates if max_reach == VEC + 1
+wire				max_reach_equal_17; 
+// max_reach_equal_16 == 1 indicate if max_reach == VEC	
+wire				max_reach_equal_16;		
 
-// head match position of current window exclude the case 
+// head match position of current window exclude the case where
 // current head match position == 17 && previous head (current 	
 // tail)== 15/14 
 wire	[4:0]		head_match_pos_op_s3;
 // head match position of current window include the case
 wire	[4:0] 		head_match_pos;
 
-// indicate if previous head is equal to 15/14/13
-wire				old_head_match_pos_valid_0;
-wire				old_head_match_pos_valid_1;
-wire				old_head_match_pos_valid_2;
+// indicate if previous head is equal to 15/14
+wire				old_head_match_pos_equal_15;
+wire				old_head_match_pos_equal_14;
 
 // max_reach_index_valid_0 == 1 indicates the maximum reach index is 
 // from position 15 
@@ -406,9 +405,9 @@ wire 				last_s3_reg;
 
 // stage 3
 // check if max_reach == VEC + 1
-assign max_reach_valid_0 = (reg_max_reach_s2 == 5'd17); 
+assign max_reach_equal_17 = (reg_max_reach_s2 == 5'd17); 
 // check if max_reach = VEC
-assign max_reach_valid_1 = (reg_max_reach_s2 == 5'd16);	
+assign max_reach_equal_16 = (reg_max_reach_s2 == 5'd16);	
 
 // substract 16 from reg_max_reach_s2 to get head match position
 adder_5bits	adder_5bits_head_match_pos_U(
@@ -420,21 +419,19 @@ adder_5bits	adder_5bits_head_match_pos_U(
 );
 
 // 
-assign old_head_match_pos_valid_0 = (old_head_match_pos_s2_reg == 5'd15);
-assign old_head_match_pos_valid_1 = (old_head_match_pos_s2_reg == 5'd14);
-assign old_head_match_pos_valid_2 = (old_head_match_pos_s2_reg == 5'd13);
+assign old_head_match_pos_equal_15 = (old_head_match_pos_s2_reg == 5'd15);
+assign old_head_match_pos_equal_14 = (old_head_match_pos_s2_reg == 5'd14);
 
 // 
-assign max_reach_index_valid_0 = (max_reach_valid_0 & (old_head_match_pos_valid_0 || old_head_match_pos_valid_1)) 
-								|| (max_reach_valid_1 & (old_head_match_pos_valid_0 || old_head_match_pos_valid_1 || old_head_match_pos_valid_2));
+assign max_reach_index_valid_0 = (max_reach_equal_17 & old_head_match_pos_equal_15) || (max_reach_equal_16 & (old_head_match_pos_equal_15 || old_head_match_pos_equal_14));
 
-assign head_match_pos = (max_reach_valid_0 && (old_head_match_pos_valid_0 || old_head_match_pos_valid_1))?{5'b0000}:head_match_pos_op_s3;
+assign head_match_pos = (max_reach_equal_17 && old_head_match_pos_equal_15)?{5'b00000}:head_match_pos_op_s3;
 
 // 
 assign max_reach_index_temp = (max_reach_index_valid_0)?{5'b01111}:reg_max_reach_index_s2;
 
 // judge if max_reach_index < old_head_match_pos
-// max_reach_index_larger = 1 means reg_max_reach_index_s2 is larger
+// max_reach_index_larger = 1 means reg_max_reach_index_s2 >= old_head_match_pos
 adder_5bits	adder_5bits_max_reach_index_U(	
 	.a(reg_max_reach_index_s2),
 	.b(~old_head_match_pos_s2_reg),
@@ -608,7 +605,7 @@ adder_8bits adder_8bits_len_raw_alt_U(
 
 always @(*)
 	begin
-		if(~max_reach_index_larger_reg)
+		if((~max_reach_index_larger_reg) && (~max_reach_index_valid_0_reg))
 		begin
 			case(old_head_match_pos_s3_reg)
 				5'd0:	begin
@@ -767,41 +764,41 @@ register_compression #(.N(1)) register_last_s4_U(.d(last_s3_reg), .clk(clk), .q(
 // ====================================================================
 
 // stage 5 ports definition
-// old_head_match_pos_k_ls = 1 means k >= old_head_match_pos
-wire				old_head_match_pos_0_ls;	
-wire				old_head_match_pos_1_ls;
-wire				old_head_match_pos_2_ls;
-wire				old_head_match_pos_3_ls;
-wire				old_head_match_pos_4_ls;
-wire				old_head_match_pos_5_ls;
-wire				old_head_match_pos_6_ls;
-wire				old_head_match_pos_7_ls;
-wire				old_head_match_pos_8_ls;
-wire				old_head_match_pos_9_ls;
-wire				old_head_match_pos_10_ls;
-wire				old_head_match_pos_11_ls;
-wire				old_head_match_pos_12_ls;
-wire				old_head_match_pos_13_ls;
-wire				old_head_match_pos_14_ls;
-wire				old_head_match_pos_15_ls;
+// old_head_match_pos_lsequ_k = 1 means old_head_match_pos <= k
+wire				old_head_match_pos_lsequ_0;	
+wire				old_head_match_pos_lsequ_1;
+wire				old_head_match_pos_lsequ_2;
+wire				old_head_match_pos_lsequ_3;
+wire				old_head_match_pos_lsequ_4;
+wire				old_head_match_pos_lsequ_5;
+wire				old_head_match_pos_lsequ_6;
+wire				old_head_match_pos_lsequ_7;
+wire				old_head_match_pos_lsequ_8;
+wire				old_head_match_pos_lsequ_9;
+wire				old_head_match_pos_lsequ_10;
+wire				old_head_match_pos_lsequ_11;
+wire				old_head_match_pos_lsequ_12;
+wire				old_head_match_pos_lsequ_13;
+wire				old_head_match_pos_lsequ_14;
+wire				old_head_match_pos_lsequ_15;
 
-// max_reach_index_k_ls = 1 means k <= max_reach_index
-wire				max_reach_index_0_ls;
-wire				max_reach_index_1_ls;
-wire				max_reach_index_2_ls;
-wire				max_reach_index_3_ls;
-wire				max_reach_index_4_ls;
-wire				max_reach_index_5_ls;
-wire				max_reach_index_6_ls;
-wire				max_reach_index_7_ls;
-wire				max_reach_index_8_ls;
-wire				max_reach_index_9_ls;
-wire				max_reach_index_10_ls;
-wire				max_reach_index_11_ls;
-wire				max_reach_index_12_ls;
-wire				max_reach_index_13_ls;
-wire				max_reach_index_14_ls;
-wire				max_reach_index_15_ls;
+// max_reach_index_lgequ_k = 1 means max_reach_index >= k
+wire				max_reach_index_lgequ_0;
+wire				max_reach_index_lgequ_1;
+wire				max_reach_index_lgequ_2;
+wire				max_reach_index_lgequ_3;
+wire				max_reach_index_lgequ_4;
+wire				max_reach_index_lgequ_5;
+wire				max_reach_index_lgequ_6;
+wire				max_reach_index_lgequ_7;
+wire				max_reach_index_lgequ_8;
+wire				max_reach_index_lgequ_9;
+wire				max_reach_index_lgequ_10;
+wire				max_reach_index_lgequ_11;
+wire				max_reach_index_lgequ_12;
+wire				max_reach_index_lgequ_13;
+wire				max_reach_index_lgequ_14;
+wire				max_reach_index_lgequ_15;
 
 // ldvalid is set if the corresponding byte is 
 // in between tail of previous window and head
@@ -824,40 +821,40 @@ wire				ldvalid_14;
 wire				ldvalid_15;
 wire	[15:0]		ldvalid;
 
-// reach_k_ls_max_reach_index = 1 means max_reach_index >= reach[k]
-wire				reach_0_ls_max_reach_index;	
-wire				reach_1_ls_max_reach_index;
-wire				reach_2_ls_max_reach_index;
-wire				reach_3_ls_max_reach_index;
-wire				reach_4_ls_max_reach_index;
-wire				reach_5_ls_max_reach_index;
-wire				reach_6_ls_max_reach_index;
-wire				reach_7_ls_max_reach_index;
-wire				reach_8_ls_max_reach_index;	
-wire				reach_9_ls_max_reach_index;
-wire				reach_10_ls_max_reach_index;
-wire				reach_11_ls_max_reach_index;
-wire				reach_12_ls_max_reach_index;
-wire				reach_13_ls_max_reach_index;
-wire				reach_14_ls_max_reach_index;
-wire				reach_15_ls_max_reach_index;
+// reach_k_lsequ_max_reach_index = 1 means reach[k] <= max_reach_index
+wire				reach_0_lsequ_max_reach_index;	
+wire				reach_1_lsequ_max_reach_index;
+wire				reach_2_lsequ_max_reach_index;
+wire				reach_3_lsequ_max_reach_index;
+wire				reach_4_lsequ_max_reach_index;
+wire				reach_5_lsequ_max_reach_index;
+wire				reach_6_lsequ_max_reach_index;
+wire				reach_7_lsequ_max_reach_index;
+wire				reach_8_lsequ_max_reach_index;	
+wire				reach_9_lsequ_max_reach_index;
+wire				reach_10_lsequ_max_reach_index;
+wire				reach_11_lsequ_max_reach_index;
+wire				reach_12_lsequ_max_reach_index;
+wire				reach_13_lsequ_max_reach_index;
+wire				reach_14_lsequ_max_reach_index;
+wire				reach_15_lsequ_max_reach_index;
 
-wire				reach_0_ls_max_reach_index_reg;
-wire				reach_1_ls_max_reach_index_reg;
-wire				reach_2_ls_max_reach_index_reg;
-wire				reach_3_ls_max_reach_index_reg;
-wire				reach_4_ls_max_reach_index_reg;
-wire				reach_5_ls_max_reach_index_reg;
-wire				reach_6_ls_max_reach_index_reg;
-wire				reach_7_ls_max_reach_index_reg;
-wire				reach_8_ls_max_reach_index_reg;
-wire				reach_9_ls_max_reach_index_reg;
-wire				reach_10_ls_max_reach_index_reg;
-wire				reach_11_ls_max_reach_index_reg;
-wire				reach_12_ls_max_reach_index_reg;
-wire				reach_13_ls_max_reach_index_reg;
-wire				reach_14_ls_max_reach_index_reg;
-wire				reach_15_ls_max_reach_index_reg;
+wire				reach_0_lsequ_max_reach_index_reg;
+wire				reach_1_lsequ_max_reach_index_reg;
+wire				reach_2_lsequ_max_reach_index_reg;
+wire				reach_3_lsequ_max_reach_index_reg;
+wire				reach_4_lsequ_max_reach_index_reg;
+wire				reach_5_lsequ_max_reach_index_reg;
+wire				reach_6_lsequ_max_reach_index_reg;
+wire				reach_7_lsequ_max_reach_index_reg;
+wire				reach_8_lsequ_max_reach_index_reg;
+wire				reach_9_lsequ_max_reach_index_reg;
+wire				reach_10_lsequ_max_reach_index_reg;
+wire				reach_11_lsequ_max_reach_index_reg;
+wire				reach_12_lsequ_max_reach_index_reg;
+wire				reach_13_lsequ_max_reach_index_reg;
+wire				reach_14_lsequ_max_reach_index_reg;
+wire				reach_15_lsequ_max_reach_index_reg;
 
 // calculate the difference between max_reach_index & reach[k]
 wire	[4:0]		max_reach_index_minus_reach_0;
@@ -922,416 +919,416 @@ wire 				last_s5_reg;
 
 // stage 5
 //judge if k >= old_head_match_pos
-adder_5bits adder_5bits_old_head_match_pos_0_ls_U(
+adder_5bits adder_5bits_old_head_match_pos_lsequ_0_U(
 	.a(5'd0),
 	.b(~old_head_match_pos_s4_reg),
 	.ci(1'b1),
 	.s(),
-	.co(old_head_match_pos_0_ls) 
+	.co(old_head_match_pos_lsequ_0) 
 );
 
-adder_5bits adder_5bits_old_head_match_pos_1_ls_U(
+adder_5bits adder_5bits_old_head_match_pos_lsequ_1_U(
 	.a(5'd1),
 	.b(~old_head_match_pos_s4_reg),
 	.ci(1'b1),
 	.s(),
-	.co(old_head_match_pos_1_ls) 
+	.co(old_head_match_pos_lsequ_1) 
 );
 
-adder_5bits adder_5bits_old_head_match_pos_2_ls_U(
+adder_5bits adder_5bits_old_head_match_pos_lsequ_2_U(
 	.a(5'd2),
 	.b(~old_head_match_pos_s4_reg),
 	.ci(1'b1),
 	.s(),
-	.co(old_head_match_pos_2_ls) 
+	.co(old_head_match_pos_lsequ_2) 
 );
 
-adder_5bits adder_5bits_old_head_match_pos_3_ls_U(
+adder_5bits adder_5bits_old_head_match_pos_lsequ_3_U(
 	.a(5'd3),
 	.b(~old_head_match_pos_s4_reg),
 	.ci(1'b1),
 	.s(),
-	.co(old_head_match_pos_3_ls) 
+	.co(old_head_match_pos_lsequ_3) 
 );
 
-adder_5bits adder_5bits_old_head_match_pos_4_ls_U(
+adder_5bits adder_5bits_old_head_match_pos_lsequ_4_U(
 	.a(5'd4),
 	.b(~old_head_match_pos_s4_reg),
 	.ci(1'b1),
 	.s(),
-	.co(old_head_match_pos_4_ls) 
+	.co(old_head_match_pos_lsequ_4) 
 );
 
-adder_5bits adder_5bits_old_head_match_pos_5_ls_U(
+adder_5bits adder_5bits_old_head_match_pos_lsequ_5_U(
 	.a(5'd5),
 	.b(~old_head_match_pos_s4_reg),
 	.ci(1'b1),
 	.s(),
-	.co(old_head_match_pos_5_ls) 
+	.co(old_head_match_pos_lsequ_5) 
 );
 
-adder_5bits adder_5bits_old_head_match_pos_6_ls_U(
+adder_5bits adder_5bits_old_head_match_pos_lsequ_6_U(
 	.a(5'd6),
 	.b(~old_head_match_pos_s4_reg),
 	.ci(1'b1),
 	.s(),
-	.co(old_head_match_pos_6_ls) 
+	.co(old_head_match_pos_lsequ_6) 
 );
 
-adder_5bits adder_5bits_old_head_match_pos_7_ls_U(
+adder_5bits adder_5bits_old_head_match_pos_lsequ_7_U(
 	.a(5'd7),
 	.b(~old_head_match_pos_s4_reg),
 	.ci(1'b1),
 	.s(),
-	.co(old_head_match_pos_7_ls) 
+	.co(old_head_match_pos_lsequ_7) 
 );
 
-adder_5bits adder_5bits_old_head_match_pos_8_ls_U(
+adder_5bits adder_5bits_old_head_match_pos_lsequ_8_U(
 	.a(5'd8),
 	.b(~old_head_match_pos_s4_reg),
 	.ci(1'b1),
 	.s(),
-	.co(old_head_match_pos_8_ls) 
+	.co(old_head_match_pos_lsequ_8) 
 );
 
-adder_5bits adder_5bits_old_head_match_pos_9_ls_U(
+adder_5bits adder_5bits_old_head_match_pos_lsequ_9_U(
 	.a(5'd9),
 	.b(~old_head_match_pos_s4_reg),
 	.ci(1'b1),
 	.s(),
-	.co(old_head_match_pos_9_ls) 
+	.co(old_head_match_pos_lsequ_9) 
 );
 
-adder_5bits adder_5bits_old_head_match_pos_10_ls_U(
+adder_5bits adder_5bits_old_head_match_pos_lsequ_10_U(
 	.a(5'd10),
 	.b(~old_head_match_pos_s4_reg),
 	.ci(1'b1),
 	.s(),
-	.co(old_head_match_pos_10_ls) 
+	.co(old_head_match_pos_lsequ_10) 
 );
 
-adder_5bits adder_5bits_old_head_match_pos_11_ls_U(
+adder_5bits adder_5bits_old_head_match_pos_lsequ_11_U(
 	.a(5'd11),
 	.b(~old_head_match_pos_s4_reg),
 	.ci(1'b1),
 	.s(),
-	.co(old_head_match_pos_11_ls) 
+	.co(old_head_match_pos_lsequ_11) 
 );
 
-adder_5bits adder_5bits_old_head_match_pos_12_ls_U(
+adder_5bits adder_5bits_old_head_match_pos_lsequ_12_U(
 	.a(5'd12),
 	.b(~old_head_match_pos_s4_reg),
 	.ci(1'b1),
 	.s(),
-	.co(old_head_match_pos_12_ls) 
+	.co(old_head_match_pos_lsequ_12) 
 );
 
-adder_5bits adder_5bits_old_head_match_pos_13_ls_U(
+adder_5bits adder_5bits_old_head_match_pos_lsequ_13_U(
 	.a(5'd13),
 	.b(~old_head_match_pos_s4_reg),
 	.ci(1'b1),
 	.s(),
-	.co(old_head_match_pos_13_ls) 
+	.co(old_head_match_pos_lsequ_13) 
 );
 
-adder_5bits adder_5bits_old_head_match_pos_14_ls_U(
+adder_5bits adder_5bits_old_head_match_pos_lsequ_14_U(
 	.a(5'd14),
 	.b(~old_head_match_pos_s4_reg),
 	.ci(1'b1),
 	.s(),
-	.co(old_head_match_pos_14_ls) 
+	.co(old_head_match_pos_lsequ_14) 
 );
 
-adder_5bits adder_5bits_old_head_match_pos_15_ls_U(
+adder_5bits adder_5bits_old_head_match_pos_lsequ_15_U(
 	.a(5'd15),
 	.b(~old_head_match_pos_s4_reg),
 	.ci(1'b1),
 	.s(),
-	.co(old_head_match_pos_15_ls) 
+	.co(old_head_match_pos_lsequ_15) 
 );
 
 // 
 //judge if k <= max_reach_index
-adder_5bits adder_5bits_max_reach_index_0_ls_U(
+adder_5bits adder_5bits_max_reach_index_lgequ_0_U(
 	.a(max_reach_index_s4_reg),
 	.b(5'b11111),
 	.ci(1'b1),
 	.s(),
-	.co(max_reach_index_0_ls) 
+	.co(max_reach_index_lgequ_0) 
 );
 
-adder_5bits adder_5bits_max_reach_index_1_ls_U(
+adder_5bits adder_5bits_max_reach_index_lgequ_1_U(
 	.a(max_reach_index_s4_reg),
 	.b(5'b11110),
 	.ci(1'b1),
 	.s(),
-	.co(max_reach_index_1_ls) 
+	.co(max_reach_index_lgequ_1) 
 );
 
-adder_5bits adder_5bits_max_reach_index_2_ls_U(
+adder_5bits adder_5bits_max_reach_index_lgequ_2_U(
 	.a(max_reach_index_s4_reg),
 	.b(5'b11101),
 	.ci(1'b1),
 	.s(),
-	.co(max_reach_index_2_ls) 
+	.co(max_reach_index_lgequ_2) 
 );
 
-adder_5bits adder_5bits_max_reach_index_3_ls_U(
+adder_5bits adder_5bits_max_reach_index_lgequ_3_U(
 	.a(max_reach_index_s4_reg),
 	.b(5'b11100),
 	.ci(1'b1),
 	.s(),
-	.co(max_reach_index_3_ls) 
+	.co(max_reach_index_lgequ_3) 
 );
 
-adder_5bits adder_5bits_max_reach_index_4_ls_U(
+adder_5bits adder_5bits_max_reach_index_lgequ_4_U(
 	.a(max_reach_index_s4_reg),
 	.b(5'b11011),
 	.ci(1'b1),
 	.s(),
-	.co(max_reach_index_4_ls) 
+	.co(max_reach_index_lgequ_4) 
 );
 
-adder_5bits adder_5bits_max_reach_index_5_ls_U(
+adder_5bits adder_5bits_max_reach_index_lgequ_5_U(
 	.a(max_reach_index_s4_reg),
 	.b(5'b11010),
 	.ci(1'b1),
 	.s(),
-	.co(max_reach_index_5_ls) 
+	.co(max_reach_index_lgequ_5) 
 );
 
-adder_5bits adder_5bits_max_reach_index_6_ls_U(
+adder_5bits adder_5bits_max_reach_index_lgequ_6_U(
 	.a(max_reach_index_s4_reg),
 	.b(5'b11001),
 	.ci(1'b1),
 	.s(),
-	.co(max_reach_index_6_ls) 
+	.co(max_reach_index_lgequ_6) 
 );
 
-adder_5bits adder_5bits_max_reach_index_7_ls_U(
+adder_5bits adder_5bits_max_reach_index_lgequ_7_U(
 	.a(max_reach_index_s4_reg),
 	.b(5'b11000),
 	.ci(1'b1),
 	.s(),
-	.co(max_reach_index_7_ls) 
+	.co(max_reach_index_lgequ_7) 
 );
 
-adder_5bits adder_5bits_max_reach_index_8_ls_U(
+adder_5bits adder_5bits_max_reach_index_lgequ_8_U(
 	.a(max_reach_index_s4_reg),
 	.b(5'b10111),
 	.ci(1'b1),
 	.s(),
-	.co(max_reach_index_8_ls) 
+	.co(max_reach_index_lgequ_8) 
 );
 
-adder_5bits adder_5bits_max_reach_index_9_ls_U(
+adder_5bits adder_5bits_max_reach_index_lgequ_9_U(
 	.a(max_reach_index_s4_reg),
 	.b(5'b10110),
 	.ci(1'b1),
 	.s(),
-	.co(max_reach_index_9_ls) 
+	.co(max_reach_index_lgequ_9) 
 );
 
-adder_5bits adder_5bits_max_reach_index_10_ls_U(
+adder_5bits adder_5bits_max_reach_index_lgequ_10_U(
 	.a(max_reach_index_s4_reg),
 	.b(5'b10101),
 	.ci(1'b1),
 	.s(),
-	.co(max_reach_index_10_ls) 
+	.co(max_reach_index_lgequ_10) 
 );
 
-adder_5bits adder_5bits_max_reach_index_11_ls_U(
+adder_5bits adder_5bits_max_reach_index_lgequ_11_U(
 	.a(max_reach_index_s4_reg),
 	.b(5'b10100),
 	.ci(1'b1),
 	.s(),
-	.co(max_reach_index_11_ls) 
+	.co(max_reach_index_lgequ_11) 
 );
 
-adder_5bits adder_5bits_max_reach_index_12_ls_U(
+adder_5bits adder_5bits_max_reach_index_lgequ_12_U(
 	.a(max_reach_index_s4_reg),
 	.b(5'b10011),
 	.ci(1'b1),
 	.s(),
-	.co(max_reach_index_12_ls) 
+	.co(max_reach_index_lgequ_12) 
 );
 
-adder_5bits adder_5bits_max_reach_index_13_ls_U(
+adder_5bits adder_5bits_max_reach_index_lgequ_13_U(
 	.a(max_reach_index_s4_reg),
 	.b(5'b10010),
 	.ci(1'b1),
 	.s(),
-	.co(max_reach_index_13_ls) 
+	.co(max_reach_index_lgequ_13) 
 );
 
-adder_5bits adder_5bits_max_reach_index_14_ls_U(
+adder_5bits adder_5bits_max_reach_index_lgequ_14_U(
 	.a(max_reach_index_s4_reg),
 	.b(5'b10001),
 	.ci(1'b1),
 	.s(),
-	.co(max_reach_index_14_ls) 
+	.co(max_reach_index_lgequ_14) 
 );
 
-adder_5bits adder_5bits_max_reach_index_15_ls_U(
+adder_5bits adder_5bits_max_reach_index_lgequ_15_U(
 	.a(max_reach_index_s4_reg),
 	.b(5'b10000),
 	.ci(1'b1),
 	.s(),
-	.co(max_reach_index_15_ls) 
+	.co(max_reach_index_lgequ_15) 
 );
 
 // 
-assign ldvalid_0 = (old_head_match_pos_0_ls && max_reach_index_0_ls)?1'b1:1'b0;
-assign ldvalid_1 = (old_head_match_pos_1_ls && max_reach_index_1_ls)?1'b1:1'b0;
-assign ldvalid_2 = (old_head_match_pos_2_ls && max_reach_index_2_ls)?1'b1:1'b0;
-assign ldvalid_3 = (old_head_match_pos_3_ls && max_reach_index_3_ls)?1'b1:1'b0;
-assign ldvalid_4 = (old_head_match_pos_4_ls && max_reach_index_4_ls)?1'b1:1'b0;
-assign ldvalid_5 = (old_head_match_pos_5_ls && max_reach_index_5_ls)?1'b1:1'b0;
-assign ldvalid_6 = (old_head_match_pos_6_ls && max_reach_index_6_ls)?1'b1:1'b0;
-assign ldvalid_7 = (old_head_match_pos_7_ls && max_reach_index_7_ls)?1'b1:1'b0;
-assign ldvalid_8 = (old_head_match_pos_8_ls && max_reach_index_8_ls)?1'b1:1'b0;
-assign ldvalid_9 = (old_head_match_pos_9_ls && max_reach_index_9_ls)?1'b1:1'b0;
-assign ldvalid_10 = (old_head_match_pos_10_ls && max_reach_index_10_ls)?1'b1:1'b0;
-assign ldvalid_11 = (old_head_match_pos_11_ls && max_reach_index_11_ls)?1'b1:1'b0;
-assign ldvalid_12 = (old_head_match_pos_12_ls && max_reach_index_12_ls)?1'b1:1'b0;
-assign ldvalid_13 = (old_head_match_pos_13_ls && max_reach_index_13_ls)?1'b1:1'b0;
-assign ldvalid_14 = (old_head_match_pos_14_ls && max_reach_index_14_ls)?1'b1:1'b0;
-assign ldvalid_15 = (old_head_match_pos_15_ls && max_reach_index_15_ls)?1'b1:1'b0;
+assign ldvalid_0 = (old_head_match_pos_lsequ_0 && max_reach_index_lgequ_0)?1'b1:1'b0;
+assign ldvalid_1 = (old_head_match_pos_lsequ_1 && max_reach_index_lgequ_1)?1'b1:1'b0;
+assign ldvalid_2 = (old_head_match_pos_lsequ_2 && max_reach_index_lgequ_2)?1'b1:1'b0;
+assign ldvalid_3 = (old_head_match_pos_lsequ_3 && max_reach_index_lgequ_3)?1'b1:1'b0;
+assign ldvalid_4 = (old_head_match_pos_lsequ_4 && max_reach_index_lgequ_4)?1'b1:1'b0;
+assign ldvalid_5 = (old_head_match_pos_lsequ_5 && max_reach_index_lgequ_5)?1'b1:1'b0;
+assign ldvalid_6 = (old_head_match_pos_lsequ_6 && max_reach_index_lgequ_6)?1'b1:1'b0;
+assign ldvalid_7 = (old_head_match_pos_lsequ_7 && max_reach_index_lgequ_7)?1'b1:1'b0;
+assign ldvalid_8 = (old_head_match_pos_lsequ_8 && max_reach_index_lgequ_8)?1'b1:1'b0;
+assign ldvalid_9 = (old_head_match_pos_lsequ_9 && max_reach_index_lgequ_9)?1'b1:1'b0;
+assign ldvalid_10 = (old_head_match_pos_lsequ_10 && max_reach_index_lgequ_10)?1'b1:1'b0;
+assign ldvalid_11 = (old_head_match_pos_lsequ_11 && max_reach_index_lgequ_11)?1'b1:1'b0;
+assign ldvalid_12 = (old_head_match_pos_lsequ_12 && max_reach_index_lgequ_12)?1'b1:1'b0;
+assign ldvalid_13 = (old_head_match_pos_lsequ_13 && max_reach_index_lgequ_13)?1'b1:1'b0;
+assign ldvalid_14 = (old_head_match_pos_lsequ_14 && max_reach_index_lgequ_14)?1'b1:1'b0;
+assign ldvalid_15 = (old_head_match_pos_lsequ_15 && max_reach_index_lgequ_15)?1'b1:1'b0;
 
 assign ldvalid = {ldvalid_0, ldvalid_1, ldvalid_2, ldvalid_3, ldvalid_4, ldvalid_5, ldvalid_6, ldvalid_7, 
 				  ldvalid_8, ldvalid_9, ldvalid_10, ldvalid_11, ldvalid_12, ldvalid_13, ldvalid_14, ldvalid_15};
 
 // 
-adder_5bits adder_5bits_reach_0_ls_max_reach_index_U(
+adder_5bits adder_5bits_reach_0_lsequ_max_reach_index_U(
 	.a(max_reach_index_s4_reg),
 	.b(~reach_s4_reg[79:75]),
 	.ci(1'b1),
 	.s(max_reach_index_minus_reach_0),
-	.co(reach_0_ls_max_reach_index) 
+	.co(reach_0_lsequ_max_reach_index) 
 );
 
-adder_5bits adder_5bits_reach_1_ls_max_reach_index_U(
+adder_5bits adder_5bits_reach_1_lsequ_max_reach_index_U(
 	.a(max_reach_index_s4_reg),
 	.b(~reach_s4_reg[74:70]),
 	.ci(1'b1),
 	.s(max_reach_index_minus_reach_1),
-	.co(reach_1_ls_max_reach_index) 
+	.co(reach_1_lsequ_max_reach_index) 
 );
 
-adder_5bits adder_5bits_reach_2_ls_max_reach_index_U(
+adder_5bits adder_5bits_reach_2_lsequ_max_reach_index_U(
 	.a(max_reach_index_s4_reg),
 	.b(~reach_s4_reg[69:65]),
 	.ci(1'b1),
 	.s(max_reach_index_minus_reach_2),
-	.co(reach_2_ls_max_reach_index) 
+	.co(reach_2_lsequ_max_reach_index) 
 );
 
-adder_5bits adder_5bits_reach_3_ls_max_reach_index_U(
+adder_5bits adder_5bits_reach_3_lsequ_max_reach_index_U(
 	.a(max_reach_index_s4_reg),
 	.b(~reach_s4_reg[64:60]),
 	.ci(1'b1),
 	.s(max_reach_index_minus_reach_3),
-	.co(reach_3_ls_max_reach_index) 
+	.co(reach_3_lsequ_max_reach_index) 
 );
 
-adder_5bits adder_5bits_reach_4_ls_max_reach_index_U(
+adder_5bits adder_5bits_reach_4_lsequ_max_reach_index_U(
 	.a(max_reach_index_s4_reg),
 	.b(~reach_s4_reg[59:55]),
 	.ci(1'b1),
 	.s(max_reach_index_minus_reach_4),
-	.co(reach_4_ls_max_reach_index) 
+	.co(reach_4_lsequ_max_reach_index) 
 );
 
-adder_5bits adder_5bits_reach_5_ls_max_reach_index_U(
+adder_5bits adder_5bits_reach_5_lsequ_max_reach_index_U(
 	.a(max_reach_index_s4_reg),
 	.b(~reach_s4_reg[54:50]),
 	.ci(1'b1),
 	.s(max_reach_index_minus_reach_5),
-	.co(reach_5_ls_max_reach_index) 
+	.co(reach_5_lsequ_max_reach_index) 
 );
 
-adder_5bits adder_5bits_reach_6_ls_max_reach_index_U(
+adder_5bits adder_5bits_reach_6_lsequ_max_reach_index_U(
 	.a(max_reach_index_s4_reg),
 	.b(~reach_s4_reg[49:45]),
 	.ci(1'b1),
 	.s(max_reach_index_minus_reach_6),
-	.co(reach_6_ls_max_reach_index) 
+	.co(reach_6_lsequ_max_reach_index) 
 );
 
-adder_5bits adder_5bits_reach_7_ls_max_reach_index_U(
+adder_5bits adder_5bits_reach_7_lsequ_max_reach_index_U(
 	.a(max_reach_index_s4_reg),
 	.b(~reach_s4_reg[44:40]),
 	.ci(1'b1),
 	.s(max_reach_index_minus_reach_7),
-	.co(reach_7_ls_max_reach_index) 
+	.co(reach_7_lsequ_max_reach_index) 
 );
 
-adder_5bits adder_5bits_reach_8_ls_max_reach_index_U(
+adder_5bits adder_5bits_reach_8_lsequ_max_reach_index_U(
 	.a(max_reach_index_s4_reg),
 	.b(~reach_s4_reg[39:35]),
 	.ci(1'b1),
 	.s(max_reach_index_minus_reach_8),
-	.co(reach_8_ls_max_reach_index) 
+	.co(reach_8_lsequ_max_reach_index) 
 );
 
-adder_5bits adder_5bits_reach_9_ls_max_reach_index_U(
+adder_5bits adder_5bits_reach_9_lsequ_max_reach_index_U(
 	.a(max_reach_index_s4_reg),
 	.b(~reach_s4_reg[34:30]),
 	.ci(1'b1),
 	.s(max_reach_index_minus_reach_9),
-	.co(reach_9_ls_max_reach_index) 
+	.co(reach_9_lsequ_max_reach_index) 
 );
 
-adder_5bits adder_5bits_reach_10_ls_max_reach_index_U(
+adder_5bits adder_5bits_reach_10_lsequ_max_reach_index_U(
 	.a(max_reach_index_s4_reg),
 	.b(~reach_s4_reg[29:25]),
 	.ci(1'b1),
 	.s(max_reach_index_minus_reach_10),
-	.co(reach_10_ls_max_reach_index) 
+	.co(reach_10_lsequ_max_reach_index) 
 );
 
-adder_5bits adder_5bits_reach_11_ls_max_reach_index_U(
+adder_5bits adder_5bits_reach_11_lsequ_max_reach_index_U(
 	.a(max_reach_index_s4_reg),
 	.b(~reach_s4_reg[24:20]),
 	.ci(1'b1),
 	.s(max_reach_index_minus_reach_11),
-	.co(reach_11_ls_max_reach_index) 
+	.co(reach_11_lsequ_max_reach_index) 
 );
 
-adder_5bits adder_5bits_reach_12_ls_max_reach_index_U(
+adder_5bits adder_5bits_reach_12_lsequ_max_reach_index_U(
 	.a(max_reach_index_s4_reg),
 	.b(~reach_s4_reg[19:15]),
 	.ci(1'b1),
 	.s(max_reach_index_minus_reach_12),
-	.co(reach_12_ls_max_reach_index) 
+	.co(reach_12_lsequ_max_reach_index) 
 );
 
-adder_5bits adder_5bits_reach_13_ls_max_reach_index_U(
+adder_5bits adder_5bits_reach_13_lsequ_max_reach_index_U(
 	.a(max_reach_index_s4_reg),
 	.b(~reach_s4_reg[14:10]),
 	.ci(1'b1),
 	.s(max_reach_index_minus_reach_13),
-	.co(reach_13_ls_max_reach_index) 
+	.co(reach_13_lsequ_max_reach_index) 
 );
 
-adder_5bits adder_5bits_reach_14_ls_max_reach_index_U(
+adder_5bits adder_5bits_reach_14_lsequ_max_reach_index_U(
 	.a(max_reach_index_s4_reg),
 	.b(~reach_s4_reg[9:5]),
 	.ci(1'b1),
 	.s(max_reach_index_minus_reach_14),
-	.co(reach_14_ls_max_reach_index) 
+	.co(reach_14_lsequ_max_reach_index) 
 );
 
-adder_5bits adder_5bits_reach_15_ls_max_reach_index_U(
+adder_5bits adder_5bits_reach_15_lsequ_max_reach_index_U(
 	.a(max_reach_index_s4_reg),
 	.b(~reach_s4_reg[4:0]),
 	.ci(1'b1),
 	.s(max_reach_index_minus_reach_15),
-	.co(reach_15_ls_max_reach_index) 
+	.co(reach_15_lsequ_max_reach_index) 
 );
  
 //calculate the original larray[0] + 3
-assign larray_0_plus_3 = larray_s4_reg[124:120] + 5'd4;
+assign larray_0_plus_3 = larray_s4_reg[124:120] + 5'd3;
 
 // 
 register_compression #(.N(5)) register_larray_0_plus_3_s5_U(.d(larray_0_plus_3), .clk(clk), .q(larray_0_plus_3_s5_reg));
@@ -1342,22 +1339,22 @@ register_compression #(.N(16)) register_ldvalid_s5_U(.d(ldvalid), .clk(clk), .q(
 
 register_compression #(.N(5)) register_max_reach_index_s5_U(.d(max_reach_index_s4_reg), .clk(clk), .q(max_reach_index_s5_reg));
 
-register_compression #(.N(1)) register_reach_0_ls_max_reach_index_U(.d(reach_0_ls_max_reach_index), .clk(clk), .q(reach_0_ls_max_reach_index_reg));
-register_compression #(.N(1)) register_reach_1_ls_max_reach_index_U(.d(reach_1_ls_max_reach_index), .clk(clk), .q(reach_1_ls_max_reach_index_reg));
-register_compression #(.N(1)) register_reach_2_ls_max_reach_index_U(.d(reach_2_ls_max_reach_index), .clk(clk), .q(reach_2_ls_max_reach_index_reg));
-register_compression #(.N(1)) register_reach_3_ls_max_reach_index_U(.d(reach_3_ls_max_reach_index), .clk(clk), .q(reach_3_ls_max_reach_index_reg));
-register_compression #(.N(1)) register_reach_4_ls_max_reach_index_U(.d(reach_4_ls_max_reach_index), .clk(clk), .q(reach_4_ls_max_reach_index_reg));
-register_compression #(.N(1)) register_reach_5_ls_max_reach_index_U(.d(reach_5_ls_max_reach_index), .clk(clk), .q(reach_5_ls_max_reach_index_reg));
-register_compression #(.N(1)) register_reach_6_ls_max_reach_index_U(.d(reach_6_ls_max_reach_index), .clk(clk), .q(reach_6_ls_max_reach_index_reg));
-register_compression #(.N(1)) register_reach_7_ls_max_reach_index_U(.d(reach_7_ls_max_reach_index), .clk(clk), .q(reach_7_ls_max_reach_index_reg));
-register_compression #(.N(1)) register_reach_8_ls_max_reach_index_U(.d(reach_8_ls_max_reach_index), .clk(clk), .q(reach_8_ls_max_reach_index_reg));
-register_compression #(.N(1)) register_reach_9_ls_max_reach_index_U(.d(reach_9_ls_max_reach_index), .clk(clk), .q(reach_9_ls_max_reach_index_reg));
-register_compression #(.N(1)) register_reach_10_ls_max_reach_index_U(.d(reach_10_ls_max_reach_index), .clk(clk), .q(reach_10_ls_max_reach_index_reg));
-register_compression #(.N(1)) register_reach_11_ls_max_reach_index_U(.d(reach_11_ls_max_reach_index), .clk(clk), .q(reach_11_ls_max_reach_index_reg));
-register_compression #(.N(1)) register_reach_12_ls_max_reach_index_U(.d(reach_12_ls_max_reach_index), .clk(clk), .q(reach_12_ls_max_reach_index_reg));
-register_compression #(.N(1)) register_reach_13_ls_max_reach_index_U(.d(reach_13_ls_max_reach_index), .clk(clk), .q(reach_13_ls_max_reach_index_reg));
-register_compression #(.N(1)) register_reach_14_ls_max_reach_index_U(.d(reach_14_ls_max_reach_index), .clk(clk), .q(reach_14_ls_max_reach_index_reg));
-register_compression #(.N(1)) register_reach_15_ls_max_reach_index_U(.d(reach_15_ls_max_reach_index), .clk(clk), .q(reach_15_ls_max_reach_index_reg));
+register_compression #(.N(1)) register_reach_0_lsequ_max_reach_index_U(.d(reach_0_lsequ_max_reach_index), .clk(clk), .q(reach_0_lsequ_max_reach_index_reg));
+register_compression #(.N(1)) register_reach_1_lsequ_max_reach_index_U(.d(reach_1_lsequ_max_reach_index), .clk(clk), .q(reach_1_lsequ_max_reach_index_reg));
+register_compression #(.N(1)) register_reach_2_lsequ_max_reach_index_U(.d(reach_2_lsequ_max_reach_index), .clk(clk), .q(reach_2_lsequ_max_reach_index_reg));
+register_compression #(.N(1)) register_reach_3_lsequ_max_reach_index_U(.d(reach_3_lsequ_max_reach_index), .clk(clk), .q(reach_3_lsequ_max_reach_index_reg));
+register_compression #(.N(1)) register_reach_4_lsequ_max_reach_index_U(.d(reach_4_lsequ_max_reach_index), .clk(clk), .q(reach_4_lsequ_max_reach_index_reg));
+register_compression #(.N(1)) register_reach_5_lsequ_max_reach_index_U(.d(reach_5_lsequ_max_reach_index), .clk(clk), .q(reach_5_lsequ_max_reach_index_reg));
+register_compression #(.N(1)) register_reach_6_lsequ_max_reach_index_U(.d(reach_6_lsequ_max_reach_index), .clk(clk), .q(reach_6_lsequ_max_reach_index_reg));
+register_compression #(.N(1)) register_reach_7_lsequ_max_reach_index_U(.d(reach_7_lsequ_max_reach_index), .clk(clk), .q(reach_7_lsequ_max_reach_index_reg));
+register_compression #(.N(1)) register_reach_8_lsequ_max_reach_index_U(.d(reach_8_lsequ_max_reach_index), .clk(clk), .q(reach_8_lsequ_max_reach_index_reg));
+register_compression #(.N(1)) register_reach_9_lsequ_max_reach_index_U(.d(reach_9_lsequ_max_reach_index), .clk(clk), .q(reach_9_lsequ_max_reach_index_reg));
+register_compression #(.N(1)) register_reach_10_lsequ_max_reach_index_U(.d(reach_10_lsequ_max_reach_index), .clk(clk), .q(reach_10_lsequ_max_reach_index_reg));
+register_compression #(.N(1)) register_reach_11_lsequ_max_reach_index_U(.d(reach_11_lsequ_max_reach_index), .clk(clk), .q(reach_11_lsequ_max_reach_index_reg));
+register_compression #(.N(1)) register_reach_12_lsequ_max_reach_index_U(.d(reach_12_lsequ_max_reach_index), .clk(clk), .q(reach_12_lsequ_max_reach_index_reg));
+register_compression #(.N(1)) register_reach_13_lsequ_max_reach_index_U(.d(reach_13_lsequ_max_reach_index), .clk(clk), .q(reach_13_lsequ_max_reach_index_reg));
+register_compression #(.N(1)) register_reach_14_lsequ_max_reach_index_U(.d(reach_14_lsequ_max_reach_index), .clk(clk), .q(reach_14_lsequ_max_reach_index_reg));
+register_compression #(.N(1)) register_reach_15_lsequ_max_reach_index_U(.d(reach_15_lsequ_max_reach_index), .clk(clk), .q(reach_15_lsequ_max_reach_index_reg));
 
 register_compression #(.N(5)) register_max_reach_index_minus_reach_0_U(.d(max_reach_index_minus_reach_0), .clk(clk), .q(max_reach_index_minus_reach_0_reg));
 register_compression #(.N(5)) register_max_reach_index_minus_reach_1_U(.d(max_reach_index_minus_reach_1), .clk(clk), .q(max_reach_index_minus_reach_1_reg));
@@ -1415,7 +1412,7 @@ wire			max_reach_index_neq_15;
 wire	[15:0]	max_reach_index_neq_k_s6;
 wire	[15:0] 	max_reach_index_neq_k_s6_reg;
 
-// trimmed_len_ls_k = 0 means trimmed_len < 0
+// trimmed_len_ls_k = 0 means trimmed_len_k < 3
 wire			trimmed_len_ls_0;
 wire			trimmed_len_ls_1;
 wire			trimmed_len_ls_2;
@@ -1735,22 +1732,22 @@ assign max_reach_index_neq_k_s6 = {max_reach_index_neq_0, max_reach_index_neq_1,
 								   max_reach_index_neq_8, max_reach_index_neq_9, max_reach_index_neq_10, max_reach_index_neq_11, max_reach_index_neq_12, max_reach_index_neq_13, max_reach_index_neq_14, max_reach_index_neq_15};
 
 // 
-assign valid_comp_0_p1 = ldvalid_s5_reg[15] && max_reach_index_neq_0 && valid_raw_s5_reg[15] && (~reach_0_ls_max_reach_index_reg);
-assign valid_comp_1_p1 = ldvalid_s5_reg[14] && max_reach_index_neq_1 && valid_raw_s5_reg[14] && (~reach_1_ls_max_reach_index_reg);
-assign valid_comp_2_p1 = ldvalid_s5_reg[13] && max_reach_index_neq_2 && valid_raw_s5_reg[13] && (~reach_2_ls_max_reach_index_reg);
-assign valid_comp_3_p1 = ldvalid_s5_reg[12] && max_reach_index_neq_3 && valid_raw_s5_reg[12] && (~reach_3_ls_max_reach_index_reg);
-assign valid_comp_4_p1 = ldvalid_s5_reg[11] && max_reach_index_neq_4 && valid_raw_s5_reg[11] && (~reach_4_ls_max_reach_index_reg);
-assign valid_comp_5_p1 = ldvalid_s5_reg[10] && max_reach_index_neq_5 && valid_raw_s5_reg[10] && (~reach_5_ls_max_reach_index_reg);
-assign valid_comp_6_p1 = ldvalid_s5_reg[9] && max_reach_index_neq_6 && valid_raw_s5_reg[9] && (~reach_6_ls_max_reach_index_reg);
-assign valid_comp_7_p1 = ldvalid_s5_reg[8] && max_reach_index_neq_7 && valid_raw_s5_reg[8] && (~reach_7_ls_max_reach_index_reg);
-assign valid_comp_8_p1 = ldvalid_s5_reg[7] && max_reach_index_neq_8 && valid_raw_s5_reg[7] && (~reach_8_ls_max_reach_index_reg);
-assign valid_comp_9_p1 = ldvalid_s5_reg[6] && max_reach_index_neq_9 && valid_raw_s5_reg[6] && (~reach_9_ls_max_reach_index_reg);
-assign valid_comp_10_p1 = ldvalid_s5_reg[5] && max_reach_index_neq_10 && valid_raw_s5_reg[5] && (~reach_10_ls_max_reach_index_reg);
-assign valid_comp_11_p1 = ldvalid_s5_reg[4] && max_reach_index_neq_11 && valid_raw_s5_reg[4] && (~reach_11_ls_max_reach_index_reg);
-assign valid_comp_12_p1 = ldvalid_s5_reg[3] && max_reach_index_neq_12 && valid_raw_s5_reg[3] && (~reach_12_ls_max_reach_index_reg);
-assign valid_comp_13_p1 = ldvalid_s5_reg[2] && max_reach_index_neq_13 && valid_raw_s5_reg[2] && (~reach_13_ls_max_reach_index_reg);
-assign valid_comp_14_p1 = ldvalid_s5_reg[1] && max_reach_index_neq_14 && valid_raw_s5_reg[1] && (~reach_14_ls_max_reach_index_reg);
-assign valid_comp_15_p1 = ldvalid_s5_reg[0] && max_reach_index_neq_15 && valid_raw_s5_reg[0] && (~reach_15_ls_max_reach_index_reg);
+assign valid_comp_0_p1 = ldvalid_s5_reg[15] && max_reach_index_neq_0 && valid_raw_s5_reg[15] && (~reach_0_lsequ_max_reach_index_reg);
+assign valid_comp_1_p1 = ldvalid_s5_reg[14] && max_reach_index_neq_1 && valid_raw_s5_reg[14] && (~reach_1_lsequ_max_reach_index_reg);
+assign valid_comp_2_p1 = ldvalid_s5_reg[13] && max_reach_index_neq_2 && valid_raw_s5_reg[13] && (~reach_2_lsequ_max_reach_index_reg);
+assign valid_comp_3_p1 = ldvalid_s5_reg[12] && max_reach_index_neq_3 && valid_raw_s5_reg[12] && (~reach_3_lsequ_max_reach_index_reg);
+assign valid_comp_4_p1 = ldvalid_s5_reg[11] && max_reach_index_neq_4 && valid_raw_s5_reg[11] && (~reach_4_lsequ_max_reach_index_reg);
+assign valid_comp_5_p1 = ldvalid_s5_reg[10] && max_reach_index_neq_5 && valid_raw_s5_reg[10] && (~reach_5_lsequ_max_reach_index_reg);
+assign valid_comp_6_p1 = ldvalid_s5_reg[9] && max_reach_index_neq_6 && valid_raw_s5_reg[9] && (~reach_6_lsequ_max_reach_index_reg);
+assign valid_comp_7_p1 = ldvalid_s5_reg[8] && max_reach_index_neq_7 && valid_raw_s5_reg[8] && (~reach_7_lsequ_max_reach_index_reg);
+assign valid_comp_8_p1 = ldvalid_s5_reg[7] && max_reach_index_neq_8 && valid_raw_s5_reg[7] && (~reach_8_lsequ_max_reach_index_reg);
+assign valid_comp_9_p1 = ldvalid_s5_reg[6] && max_reach_index_neq_9 && valid_raw_s5_reg[6] && (~reach_9_lsequ_max_reach_index_reg);
+assign valid_comp_10_p1 = ldvalid_s5_reg[5] && max_reach_index_neq_10 && valid_raw_s5_reg[5] && (~reach_10_lsequ_max_reach_index_reg);
+assign valid_comp_11_p1 = ldvalid_s5_reg[4] && max_reach_index_neq_11 && valid_raw_s5_reg[4] && (~reach_11_lsequ_max_reach_index_reg);
+assign valid_comp_12_p1 = ldvalid_s5_reg[3] && max_reach_index_neq_12 && valid_raw_s5_reg[3] && (~reach_12_lsequ_max_reach_index_reg);
+assign valid_comp_13_p1 = ldvalid_s5_reg[2] && max_reach_index_neq_13 && valid_raw_s5_reg[2] && (~reach_13_lsequ_max_reach_index_reg);
+assign valid_comp_14_p1 = ldvalid_s5_reg[1] && max_reach_index_neq_14 && valid_raw_s5_reg[1] && (~reach_14_lsequ_max_reach_index_reg);
+assign valid_comp_15_p1 = ldvalid_s5_reg[0] && max_reach_index_neq_15 && valid_raw_s5_reg[0] && (~reach_15_lsequ_max_reach_index_reg);
 
 // 
 assign larray_0_p1 = (valid_comp_0_p1)?((trimmed_len_ls_0)?{3'd0,trimmed_len_0}:literals_s5_reg[127:120]):larray_s5_reg[127:120];
@@ -1875,10 +1872,10 @@ register_compression #(.N(1)) register_last_s6_U(.d(last_s5_reg), .clk(clk), .q(
 wire			comp_near_0;
 wire			comp_near_0_reg;
 
-// processed_len[k]++
+// processed_len_0_op1: processed_len[k]++
 wire	[4:0]	processed_len_0_op1;
 wire	[4:0]	processed_len_0_op1_reg;
-// processed_len[k] += larray[k] + 3
+// processed_len_0_op2: processed_len[k] += larray[k] + 3
 wire	[4:0]	processed_len_0_op2;
 wire	[4:0]	processed_len_0_op2_reg;
 
@@ -1956,7 +1953,7 @@ adder_5bits adder_5bits_comp_near_0_U(
 assign processed_len_0_op1 = old_head_match_pos_s6_reg + 5'd1;
 assign processed_len_0_op2 = old_head_match_pos_s6_reg + larray_0_plus_3_p1_reg[4:0];
 
-assign larray_1_plus_3 = larray_1_p1_reg[4:0] + 5'd4;
+assign larray_1_plus_3 = larray_1_p1_reg[4:0] + 5'd3;
 
 // 
 register_compression #(.N(1)) register_comp_near_0_U(.d(comp_near_0), .clk(clk), .q(comp_near_0_reg));
@@ -2136,7 +2133,7 @@ assign processed_len_1_op1 = processed_len_0 + 5'd1;
 
 assign processed_len_1_op2 = processed_len_0 + larray_1_plus_3_reg;
 
-assign larray_2_plus_3 = larray_2_s7_reg[4:0] + 5'd4;
+assign larray_2_plus_3 = larray_2_s7_reg[4:0] + 5'd3;
 
 // 
 register_compression #(.N(5)) processed_len_0_reg_U(.d(processed_len_0), .clk(clk), .q(processed_len_0_reg));
@@ -2292,8 +2289,8 @@ wire 			last_s9_reg;
 // prepare the lazy evaluation for k = 2
 assign do_lazy_1 = (ldvalid_s8_reg[13]) && (dist_valid_s8_reg[13]) && (~comp_near_1_reg);
 assign processed_len_1 = (ldvalid_s8_reg[14] && max_reach_index_neq_k_s8_reg[14] && comp_1_processed_len_0_reg)?((dist_valid_s8_reg[14])?(do_lazy_1?processed_len_1_op1_reg:processed_len_1_op2_reg):processed_len_1_op1_reg):processed_len_0_reg;
-assign larray_1_s9 = (ldvalid_s8_reg[14] && max_reach_index_neq_k_s8_reg[14] && comp_1_processed_len_0_reg && (dist_valid_s8_reg[14]) && (do_lazy_1))?literals_s8_reg[119:112]:larray_1_s8_reg;
-assign darray_1_s9 = (ldvalid_s8_reg[14] && max_reach_index_neq_k_s8_reg[14] && comp_1_processed_len_0_reg && (dist_valid_s8_reg[14]) && (do_lazy_1))?16'd0:darray_1_s8_reg;
+assign larray_1_s9 = (ldvalid_s8_reg[14] && max_reach_index_neq_k_s8_reg[14] && comp_1_processed_len_0_reg && dist_valid_s8_reg[14] && do_lazy_1)?literals_s8_reg[119:112]:larray_1_s8_reg;
+assign darray_1_s9 = (ldvalid_s8_reg[14] && max_reach_index_neq_k_s8_reg[14] && comp_1_processed_len_0_reg && dist_valid_s8_reg[14] && do_lazy_1)?16'd0:darray_1_s8_reg;
 assign ldvalid_s9 = (ldvalid_s8_reg[14] && max_reach_index_neq_k_s8_reg[14] && (~comp_1_processed_len_0_reg))?{ldvalid_s8_reg[15], 1'b0, ldvalid_s8_reg[13:0]}:ldvalid_s8_reg;
 
 // comp_near_2 =1 means larray[2] >= larray[3]
@@ -2319,7 +2316,7 @@ assign processed_len_2_op1 = processed_len_1 + 5'd1;
 
 assign processed_len_2_op2 = processed_len_1 + larray_2_plus_3_reg;
 
-assign larray_3_plus_3 = larray_3_s8_reg[4:0] + 5'd4;
+assign larray_3_plus_3 = larray_3_s8_reg[4:0] + 5'd3;
 
 // 
 register_compression #(.N(5)) processed_len_1_reg_U(.d(processed_len_1), .clk(clk), .q(processed_len_1_reg));
@@ -2505,7 +2502,7 @@ assign processed_len_3_op1 = processed_len_2 + 5'd1;
 
 assign processed_len_3_op2 = processed_len_2 + larray_3_plus_3_reg;
 
-assign larray_4_plus_3 = larray_4_s9_reg[4:0] + 5'd4;
+assign larray_4_plus_3 = larray_4_s9_reg[4:0] + 5'd3;
 
 // 
 register_compression #(.N(5)) processed_len_2_reg_U(.d(processed_len_2), .clk(clk), .q(processed_len_2_reg));
@@ -2690,7 +2687,7 @@ assign processed_len_4_op1 = processed_len_3 + 4'd1;
 
 assign processed_len_4_op2 = processed_len_3 + larray_4_plus_3_reg;
 
-assign larray_5_plus_3 = larray_5_s10_reg[4:0] + 5'd4;
+assign larray_5_plus_3 = larray_5_s10_reg[4:0] + 5'd3;
 
 // 
 register_compression #(.N(5)) processed_len_3_reg_U(.d(processed_len_3), .clk(clk), .q(processed_len_3_reg));
@@ -2875,7 +2872,7 @@ assign processed_len_5_op1 = processed_len_4 + 5'd1;
 
 assign processed_len_5_op2 = processed_len_4 + larray_5_plus_3_reg;
 
-assign larray_6_plus_3 = larray_6_s11_reg[4:0] + 5'd4;
+assign larray_6_plus_3 = larray_6_s11_reg[4:0] + 5'd3;
 
 // 
 register_compression #(.N(5)) processed_len_4_reg_U(.d(processed_len_4), .clk(clk), .q(processed_len_4_reg));
@@ -3059,7 +3056,7 @@ assign processed_len_6_op1 = processed_len_5 + 5'd1;
 
 assign processed_len_6_op2 = processed_len_5 + larray_6_plus_3_reg;
 
-assign larray_7_plus_3 = larray_7_s12_reg[4:0] + 5'd4;
+assign larray_7_plus_3 = larray_7_s12_reg[4:0] + 5'd3;
 
 // 
 register_compression #(.N(5)) processed_len_5_reg_U(.d(processed_len_5), .clk(clk), .q(processed_len_5_reg));
@@ -3244,7 +3241,7 @@ assign processed_len_7_op1 = processed_len_6 + 5'd1;
 
 assign processed_len_7_op2 = processed_len_6 + larray_7_plus_3_reg;
 
-assign larray_8_plus_3 = larray_8_s13_reg[4:0] + 5'd4;
+assign larray_8_plus_3 = larray_8_s13_reg[4:0] + 5'd3;
 
 // 
 register_compression #(.N(5)) processed_len_6_reg_U(.d(processed_len_6), .clk(clk), .q(processed_len_6_reg));
@@ -3429,7 +3426,7 @@ assign processed_len_8_op1 = processed_len_7 + 5'd1;
 
 assign processed_len_8_op2 = processed_len_7 + larray_8_plus_3_reg;
 
-assign larray_9_plus_3 = larray_9_s14_reg[4:0] + 5'd4;
+assign larray_9_plus_3 = larray_9_s14_reg[4:0] + 5'd3;
 
 // 
 register_compression #(.N(5)) processed_len_7_reg_U(.d(processed_len_7), .clk(clk), .q(processed_len_7_reg));
@@ -3614,7 +3611,7 @@ assign processed_len_9_op1 = processed_len_8 + 5'd1;
 
 assign processed_len_9_op2 = processed_len_8 + larray_9_plus_3_reg;
 
-assign larray_10_plus_3 = larray_10_s15_reg[4:0] + 5'd4;
+assign larray_10_plus_3 = larray_10_s15_reg[4:0] + 5'd3;
 
 // 
 register_compression #(.N(5)) processed_len_8_reg_U(.d(processed_len_8), .clk(clk), .q(processed_len_8_reg));
@@ -3799,7 +3796,7 @@ assign processed_len_10_op1 = processed_len_9 + 5'd1;
 
 assign processed_len_10_op2 = processed_len_9 + larray_10_plus_3_reg;
 
-assign larray_11_plus_3 = larray_11_s16_reg[4:0] + 5'd4;
+assign larray_11_plus_3 = larray_11_s16_reg[4:0] + 5'd3;
 
 // 
 register_compression #(.N(5)) processed_len_9_reg_U(.d(processed_len_9), .clk(clk), .q(processed_len_9_reg));
@@ -3984,7 +3981,7 @@ assign processed_len_11_op1 = processed_len_10 + 5'd1;
 
 assign processed_len_11_op2 = processed_len_10 + larray_11_plus_3_reg;
 
-assign larray_12_plus_3 = larray_12_s17_reg[4:0] + 5'd4;
+assign larray_12_plus_3 = larray_12_s17_reg[4:0] + 5'd3;
 
 // 
 register_compression #(.N(5)) processed_len_10_reg_U(.d(processed_len_10), .clk(clk), .q(processed_len_10_reg));
@@ -4169,7 +4166,7 @@ assign processed_len_12_op1 = processed_len_11 + 5'd1;
 
 assign processed_len_12_op2 = processed_len_11 + larray_12_plus_3_reg;
 
-assign larray_13_plus_3 = larray_13_s18_reg[4:0] + 5'd4;
+assign larray_13_plus_3 = larray_13_s18_reg[4:0] + 5'd3;
 
 // 
 register_compression #(.N(5)) processed_len_11_reg_U(.d(processed_len_11), .clk(clk), .q(processed_len_11_reg));
@@ -4354,7 +4351,7 @@ assign processed_len_13_op1 = processed_len_12 + 5'd1;
 
 assign processed_len_13_op2 = processed_len_12 + larray_13_plus_3_reg;
 
-assign larray_14_plus_3 = larray_14_s19_reg[4:0] + 5'd4;
+assign larray_14_plus_3 = larray_14_s19_reg[4:0] + 5'd3;
 
 // 
 register_compression #(.N(5)) processed_len_12_reg_U(.d(processed_len_12), .clk(clk), .q(processed_len_12_reg));
