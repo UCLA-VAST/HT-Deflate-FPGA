@@ -8756,7 +8756,7 @@ calc_match_len 	calc_match_length_28_q1_U(
 
 calc_match_len 	calc_match_length_29_q1_U(
 	.clk(clk), 
-	.current_vec(reg_update_0_s6), 
+	.current_vec(reg_update_29_s6), 
 	.match_result(hash_content_bank_29_bram_q1_s6), 
 	.match_length(match_length_bank_29_q1)
 );
