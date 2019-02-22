@@ -4878,7 +4878,7 @@ calc_match_len  calc_match_length_28_U(
 
 calc_match_len  calc_match_length_29_U(
   .clk(clk), 
-  .current_vec(reg_update_0_s5), 
+  .current_vec(reg_update_29_s5), 
   .match_result(hash_content_bank_29_bram_s5), 
   .match_length(match_length_bank_29)
 );
