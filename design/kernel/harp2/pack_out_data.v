@@ -2080,7 +2080,7 @@ wire 	[63:0]	data_out_s17;
 wire 	[7:0]	data_len_s17;
 
 wire 			ready_s17;
-wire 			last_s17
+wire 			last_s17;
 
 wire 	[31:0]	reg_l_d_packer_out_13_s17;
 wire 	[31:0]	reg_l_d_packer_out_14_s17;
@@ -2346,7 +2346,7 @@ shift_reg_256bits 	shift_reg_256bits_s22(
 
 register_compression_reset #(.N(1))   ready_s22_U(.d(ready_s21), .clk(clk), .reset(reset), .q(ready_s22));
 
-register_compression #(.N(1))	last_s22_U(.d(last_s21), .clk(clk), .q(.out_last));
+register_compression #(.N(1))	last_s22_U(.d(last_s21), .clk(clk), .q(out_last));
 
 
 assign out_data = data_buffer_s22;
